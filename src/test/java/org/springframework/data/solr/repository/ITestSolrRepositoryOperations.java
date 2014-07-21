@@ -42,7 +42,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.geo.Box;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Point;
-import org.springframework.data.solr.core.geo.GeoLocation;
 import org.springframework.data.solr.core.query.SimpleField;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
@@ -317,7 +316,7 @@ public class ITestSolrRepositoryOperations {
 
 		repo.save(Arrays.asList(locatedInBuffalow, locatedInNYC));
 
-		List<ProductBean> found = repo.findByLocationNear(new Box(new GeoLocation(45, -94), new GeoLocation(46, -93)));
+		List<ProductBean> found = repo.findByLocationNear(new Box(new Point(45, -94), new Point(46, -93)));
 		Assert.assertEquals(1, found.size());
 		Assert.assertEquals(locatedInBuffalow.getId(), found.get(0).getId());
 	}
@@ -459,13 +458,13 @@ public class ITestSolrRepositoryOperations {
 		Pageable pageable = new PageRequest(0, 2);
 		Page<ProductBean> page1 = repo.findByNameStartingWith("name", pageable);
 		Assert.assertEquals(pageable.getPageSize(), page1.getNumberOfElements());
-		Assert.assertTrue(page1.hasNextPage());
+		Assert.assertTrue(page1.hasNext());
 		Assert.assertEquals(3, page1.getTotalElements());
 
 		pageable = new PageRequest(1, 2);
 		Page<ProductBean> page2 = repo.findByNameStartingWith("name", pageable);
 		Assert.assertEquals(1, page2.getNumberOfElements());
-		Assert.assertFalse(page2.hasNextPage());
+		Assert.assertFalse(page2.hasNext());
 		Assert.assertEquals(3, page2.getTotalElements());
 	}
 
